@@ -1,0 +1,14 @@
+metrics
+.DS_Store
+docker-compose-riskev.yaml
+bun.lockb
+*.suo
+*.user
+_ReSharper.*
+bin
+obj
+packages
+appsettings.Development.rizqi.json
+.vs
+*.pem
+*.key
