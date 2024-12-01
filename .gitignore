@@ -12,3 +12,4 @@ appsettings.Development.rizqi.json
 .vs
 *.pem
 *.key
+appsettings.json

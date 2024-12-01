@@ -48,6 +48,9 @@ public class ApplicationDbContext : DbContext
         });
         modelBuilder.Entity<Product>(entity=>{
             entity.HasKey(e=>e.Id);
+            entity.HasOne(e=>e.Company)
+            .WithMany()
+            .HasForeignKey(e=>e.CompanyId);
         });
         modelBuilder.Entity<PurchasedProduct>(entity=>{
             entity.HasKey(e=>e.Id);
