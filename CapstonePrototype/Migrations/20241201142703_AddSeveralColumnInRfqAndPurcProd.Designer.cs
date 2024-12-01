@@ -3,6 +3,7 @@ using System;
 using CapstonePrototype.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CapstonePrototype.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241201142703_AddSeveralColumnInRfqAndPurcProd")]
+    partial class AddSeveralColumnInRfqAndPurcProd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,54 +190,6 @@ namespace CapstonePrototype.Migrations
                     b.ToTable("Rfqs");
                 });
 
-            modelBuilder.Entity("CapstonePrototype.Models.RfqBid", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("BidStatus")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("ExpectedArrival")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("FileUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("OrderDeadline")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("RfqId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("RfqId");
-
-                    b.ToTable("RfqBids");
-                });
-
             modelBuilder.Entity("CapstonePrototype.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -337,25 +292,6 @@ namespace CapstonePrototype.Migrations
                     b.Navigation("CompCategory");
 
                     b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("CapstonePrototype.Models.RfqBid", b =>
-                {
-                    b.HasOne("CapstonePrototype.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CapstonePrototype.Models.Rfq", "Rfq")
-                        .WithMany()
-                        .HasForeignKey("RfqId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("Rfq");
                 });
 
             modelBuilder.Entity("CapstonePrototype.Models.User", b =>

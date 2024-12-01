@@ -18,6 +18,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Rfq> Rfqs { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<PurchasedProduct> PurchasedProducts { get; set; }
+    public DbSet<RfqBid> RfqBids { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -54,6 +55,15 @@ public class ApplicationDbContext : DbContext
         });
         modelBuilder.Entity<PurchasedProduct>(entity=>{
             entity.HasKey(e=>e.Id);
+        });
+        modelBuilder.Entity<RfqBid>(entity=>{
+            entity.HasKey(e=>e.Id);
+            entity.HasOne(e=>e.Rfq)
+            .WithMany()
+            .HasForeignKey(e=>e.RfqId);
+            entity.HasOne(e=>e.Company)
+            .WithMany()
+            .HasForeignKey(e=>e.CompanyId);
         });
     }
 }

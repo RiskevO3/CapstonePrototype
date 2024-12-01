@@ -2,7 +2,9 @@ namespace CapstonePrototype.Models;
 public class RfqBid
 {
     public int Id {get;set;}
+    public int RfqId {get;set;}
     public Rfq Rfq {get;set;} = null!;
+    public int CompanyId {get;set;}
     public Company Company {get;set;} = null!;
     public string BidStatus {get;set;} = null!;
     public string FileUrl {get;set;} = null!;
