@@ -4,6 +4,7 @@ using CapstonePrototype.Models;
 using CapstonePrototype.services.ImageService;
 using CapstonePrototype.Services.AuthService;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SealBackend.Dto;
 
 namespace CapstonePrototype.Services.ProductService;
@@ -16,17 +17,24 @@ public class ProductService(ApplicationDbContext context, IImageService imageSer
     {
         try
         {
+            Console.WriteLine($"The product:{JsonConvert.SerializeObject(product)}");
             var user = await _authService.GetAuthenticatedUser();
             if (user == null) return new ServiceResponse<ProductDto> { Data = null, Message = "User not found", Success = false };
-            var isProductExist = await _context.Products.FirstOrDefaultAsync(x => x.Name == product.Name && x.CompanyId == user.Company.Id);
+            var isProductExist = await _context.Products.FirstOrDefaultAsync(x => x.Name == product.Name && x.CompanyId == user.CompanyId);
             if (isProductExist != null) return new ServiceResponse<ProductDto> { Data = null, Message = "Product already exist", Success = false };
-            var imageUrl = await _imageService.UploadImage(product.Image, "products");
-            if (!imageUrl.Success) return new ServiceResponse<ProductDto> { Data = null, Message = "Image is invalid", Success = false };
+            string imageUrl = "";
+            if (product.Image != null)
+            {
+                var imageUrlRes = await _imageService.UploadImage(product.Image, "products");
+                if (!imageUrlRes.Success) return new ServiceResponse<ProductDto> { Data = null, Message = "Image is invalid", Success = false };
+                imageUrl = imageUrlRes.Message;
+            }
             var newProduct = new Product
             {
-                ImageUrl = imageUrl.Message,
+                ImageUrl = imageUrl,
                 Name = product.Name,
                 Description = product.Description,
+                CompanyId = user.CompanyId
             };
             await _context.Products.AddAsync(newProduct);
             await _context.SaveChangesAsync();
@@ -34,7 +42,7 @@ public class ProductService(ApplicationDbContext context, IImageService imageSer
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error from ProductService: {ex.Message}");
+            Console.WriteLine($"Error from ProductService: {ex}");
             return new ServiceResponse<ProductDto>
             {
                 Data = null,

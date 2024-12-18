@@ -5,8 +5,6 @@ public class PurchasedProductInsertDto
 {
     [Required(ErrorMessage = "Product id is required")]
     public int ProductId { get; set; }
-
-    [Required(ErrorMessage = "Rfq id is required")]
     public int RfqId { get; set; }
     
     [Required(ErrorMessage ="Unit price is required")]

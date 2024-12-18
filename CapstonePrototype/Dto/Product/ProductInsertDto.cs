@@ -3,8 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CapstonePrototype.Dto.Product;
 public class ProductInsertDto
 {
-    [Base64String(ErrorMessage = "Image is required")]
-    public string Image { get; set; } = null!;
+    public string? Image { get; set; } = null!;
 
     [Required(ErrorMessage = "Name is required"), MaxLength(50, ErrorMessage = "Name must be at most 50 characters")]
     public string Name { get; set; } = null!;

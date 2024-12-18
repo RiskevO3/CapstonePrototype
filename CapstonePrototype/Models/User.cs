@@ -7,5 +7,6 @@ public class User
     public string RefreshToken { get; set; } = null!;
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
+    public int CompanyId { get; set; }
     public Company Company { get; set; } = null!;
 }

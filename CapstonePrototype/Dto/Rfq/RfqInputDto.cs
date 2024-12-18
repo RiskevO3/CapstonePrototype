@@ -13,8 +13,7 @@ public class RfqInputDto
     [Required(ErrorMessage = "Bid type is required")]
     public string BidType {get;set;} = null!;
 
-    [Required(ErrorMessage = "Description is required")]
-    public string Description {get;set;} = null!;
+    public string Description {get;set;} = "";
 
     [Required(ErrorMessage = "Order deadline is required")]
     public DateTime OrderDeadline {get;set;}

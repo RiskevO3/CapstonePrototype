@@ -16,6 +16,7 @@ public class PurchasedProduct
         {
             Id = Id,
             Name = Product.Name,
+            Description = Product.Description,
             Image = Product.ImageUrl,
             UnitPrice = UnitPrice,
             Quantity = Quantity,

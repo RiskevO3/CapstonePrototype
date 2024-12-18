@@ -46,6 +46,9 @@ public class ApplicationDbContext : DbContext
         });
         modelBuilder.Entity<Rfq>(entity=>{
             entity.HasKey(e=>e.Id);
+            entity.HasOne(e=>e.User)
+            .WithMany()
+            .HasForeignKey(e=>e.UserId);
         });
         modelBuilder.Entity<Product>(entity=>{
             entity.HasKey(e=>e.Id);
@@ -64,6 +67,9 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(e=>e.Company)
             .WithMany()
             .HasForeignKey(e=>e.CompanyId);
+            entity.HasOne(e=>e.User)
+            .WithMany()
+            .HasForeignKey(e=>e.UserId);
         });
     }
 }

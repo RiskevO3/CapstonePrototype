@@ -6,6 +6,8 @@ namespace CapstonePrototype.Models;
 public class Rfq
 {
     public int Id {get;set;}
+    public int UserId {get;set;}
+    public User User {get;set;} = null!;
     public string Title {get;set;} = null!;
     public Company Company {get;set;} = null!;
     public CompCategory CompCategory {get;set;} = null!;
@@ -24,7 +26,7 @@ public class Rfq
             Id = Id,
             Title = Title,
             CompanyName = Company.Name,
-            Category = CompCategory.Name,
+            Category = CompCategory.AsRfqCategoryDto(),
             BidType = BidType,
             Description = Description,
             PurchasedProducts = purchasedProducts,

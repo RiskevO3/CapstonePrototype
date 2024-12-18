@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using CapstonePrototype.Data;
 using CapstonePrototype.Dto;
@@ -6,6 +7,7 @@ using CapstonePrototype.Models;
 using CapstonePrototype.Services.JwtService;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SealBackend.Dto;
 
 namespace CapstonePrototype.Services.AuthService;
@@ -22,6 +24,8 @@ public class AuthService(ApplicationDbContext context,IJwtService jwtService,IHt
         {
             var companyExist = await _context.Companies.FirstOrDefaultAsync(c => c.Id == register.CompanyId);
             if(companyExist == null)return new ServiceResponse<RegisterResponseDto>{Success = false, Message = "Company does not exist"};
+            var hashedPassword = GenerateHashPassword(register.Password);
+            Console.WriteLine("Hashed Password: "+hashedPassword);
             var user = new User
             {
                 Email = register.Email,
@@ -33,7 +37,7 @@ public class AuthService(ApplicationDbContext context,IJwtService jwtService,IHt
             };
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
-            var accessToken = _jwtService.GenerateAccessToken(user);
+            var accessToken = _jwtService.GenerateAccessToken(user,true);
             var refreshToken = await _jwtService.GenerateRefreshToken(user);
             return new ServiceResponse<RegisterResponseDto>
             {
@@ -63,7 +67,7 @@ public class AuthService(ApplicationDbContext context,IJwtService jwtService,IHt
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == login.Email);
             if(user == null)return new ServiceResponse<LoginResponseDto>{Success = false, Message = "User not found"};
             if(!VerifyPassword(login.Password,user.Password))return new ServiceResponse<LoginResponseDto>{Success = false, Message = "Invalid password"};
-            var accessToken = _jwtService.GenerateAccessToken(user);
+            var accessToken = _jwtService.GenerateAccessToken(user,true);
             var refreshToken = await _jwtService.GenerateRefreshToken(user);
             return new ServiceResponse<LoginResponseDto>
             {
@@ -88,7 +92,8 @@ public class AuthService(ApplicationDbContext context,IJwtService jwtService,IHt
     }
     public async Task<User> GetAuthenticatedUser()
     {
-        var email = _httpContextAccessor.HttpContext?.User?.FindFirst("email")?.Value;
+        var email = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
+        Console.WriteLine("Email: "+email);
         if (email == null) return null!;
         return await _context.Users.FirstOrDefaultAsync(u => u.Email != null && u.Email == email) ?? null!;
     }

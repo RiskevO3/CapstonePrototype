@@ -50,7 +50,7 @@ public class PurchasedProductService(ApplicationDbContext context):IPurchasedPro
                     Rfq = isRfqExist,
                     UnitPrice = product.UnitPrice,
                     Quantity = product.Quantity,
-                    Amount = product.Amount
+                    Amount = product.UnitPrice * product.Quantity
                 };
                 await _context.PurchasedProducts.AddAsync(purchasedProduct);
                 purchasedProducts.Add(purchasedProduct.AsDto());
