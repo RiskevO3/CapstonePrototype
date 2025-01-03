@@ -13,3 +13,4 @@ appsettings.Development.rizqi.json
 *.pem
 *.key
 appsettings.json
+wwwroot

@@ -9,4 +9,7 @@ public interface IRfqBidService
     public Task<ServiceResponse<List<RfqBidItemResponseDto>>> GetRfqCompanyBids();
     public Task<ServiceResponse<RfqBidInputDto>> GetRfqBidDetail(int id);
     public Task<ServiceResponse<bool>> ChangeRfqBidStatus(RfqBidStatusInputDto input);
+    public Task<ServiceResponse<bool>> UploadInvoiceOrResi(RfqBidInputInvoiceOrResidto input);
+    public Task<ServiceResponse<bool>> UploadImage(RfqBidInputPOPDto input);
+    public Task<ServiceResponse<bool>> CompleteRfqBid(int rfqBidId);
 }

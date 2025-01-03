@@ -14,6 +14,7 @@ public class Rfq
     public string BidType {get;set;} = null!;
     public string Description {get;set;} = null!;
     public int Amount {get;set;} = 0;
+    public bool IsCompleted {get;set;} = false;
     public DateTime OrderDeadline {get;set;}
     public DateTime ExpectedArrival {get;set;}
     public DateTime CreatedAt {get;set;}

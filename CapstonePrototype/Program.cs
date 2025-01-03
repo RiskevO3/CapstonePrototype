@@ -4,6 +4,7 @@ using CapstonePrototype.services.ImageService;
 using CapstonePrototype.Services.AuthService;
 using CapstonePrototype.Services.CategoryService;
 using CapstonePrototype.Services.CompanyService;
+using CapstonePrototype.Services.FileUploadService;
 using CapstonePrototype.Services.JwtService;
 using CapstonePrototype.Services.ProductService;
 using CapstonePrototype.Services.PurchasedProductService;
@@ -59,7 +60,7 @@ builder.Services.AddScoped<IRfqService, RfqService>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
 builder.Services.AddScoped<IRfqBidService, RfqBidService>();
 builder.Services.AddScoped<ICompanyService,CompanyService>();
-
+builder.Services.AddScoped<IFileUploadService,FileUploadService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -114,6 +115,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseStaticFiles();
 
 app.MapControllers();
 

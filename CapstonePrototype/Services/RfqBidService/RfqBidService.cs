@@ -2,15 +2,17 @@ using CapstonePrototype.Data;
 using CapstonePrototype.Dto.RfqBid;
 using CapstonePrototype.Models;
 using CapstonePrototype.Services.AuthService;
+using CapstonePrototype.Services.FileUploadService;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SealBackend.Dto;
 
 namespace CapstonePrototype.Services.RfqBidService;
-public class RfqBidService(ApplicationDbContext context,IAuthService authService):IRfqBidService
+public class RfqBidService(ApplicationDbContext context,IAuthService authService,IFileUploadService fileUploadService):IRfqBidService
 {
     private readonly ApplicationDbContext _context = context;
     private readonly IAuthService _authService = authService;
+    private readonly IFileUploadService _fileUploadService = fileUploadService;
 
     public async Task<ServiceResponse<bool>> CreateRfqBid(RfqBidInputDto rfqBid)
     {
@@ -136,8 +138,13 @@ public class RfqBidService(ApplicationDbContext context,IAuthService authService
             {
                 RfqId = rfqBidExist.RfqId,
                 Amount = rfqBidExist.Amount,
+                Status = rfqBidExist.BidStatus,
                 Description = rfqBidExist.Description,
                 OrderDeadline = rfqBidExist.OrderDeadline,
+                FileUrl = rfqBidExist.FileUrl,
+                FilePaymentUrl = rfqBidExist.FilePaymentUrl,
+                Resi = rfqBidExist.NoResi,
+                IsCompleted = rfqBidExist.IsCompleted,
                 ExpectedArrival = rfqBidExist.ExpectedArrival
             };
             return new ServiceResponse<RfqBidInputDto>{Data = rfqBidDetail, Message = "RFQ Bid retrieved successfully", Success = true};
@@ -171,6 +178,82 @@ public class RfqBidService(ApplicationDbContext context,IAuthService authService
             {
                 Data = false,
                 Message = "Error changing RFQ Bid status",
+                Success = false
+            };
+        }
+    }
+    public async Task<ServiceResponse<bool>> UploadInvoiceOrResi(RfqBidInputInvoiceOrResidto input)
+    {
+        try
+        {
+            var isRBExist = await _context.RfqBids.FirstOrDefaultAsync(r=>r.Id==input.RfqBidId);
+            if(isRBExist == null) return new ServiceResponse<bool>{Data = false, Message = "RFQ Bid not found", Success = false};
+            if(input.FileUrl != "")
+            {
+                var fileUrl = await _fileUploadService.UploadPdfAsync("", input.FileUrl);
+                isRBExist.FileUrl = fileUrl;
+            }
+            if(input.Resi != "")
+            {
+                isRBExist.NoResi = input.Resi;
+            }
+            _context.RfqBids.Update(isRBExist);
+            await _context.SaveChangesAsync();
+            return new ServiceResponse<bool>{Data = true, Message = "Invoice or resi uploaded successfully", Success = true};
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Error from RfqBidService: {e}");
+            return new ServiceResponse<bool>
+            {
+                Data = false,
+                Message = "Error uploading invoice or resi",
+                Success = false
+            };
+        }
+    }
+    public async Task<ServiceResponse<bool>> UploadImage(RfqBidInputPOPDto input)
+    {
+        try
+        {
+            var isRBExist = await _context.RfqBids.FirstOrDefaultAsync(r=>r.Id==input.RfqBidId);
+            if(isRBExist == null) return new ServiceResponse<bool>{Data = false, Message = "RFQ Bid not found", Success = false};
+            var fileUrl = await _fileUploadService.UploadImageAsync("", input.ImageUrl);
+            isRBExist.FilePaymentUrl = fileUrl;
+            _context.RfqBids.Update(isRBExist);
+            await _context.SaveChangesAsync();
+            return new ServiceResponse<bool>{Data = true, Message = "Image uploaded successfully", Success = true};
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Error from RfqBidService: {e}");
+            return new ServiceResponse<bool>
+            {
+                Data = false,
+                Message = "Error uploading image",
+                Success = false
+            };
+        }
+    }
+
+    public async Task<ServiceResponse<bool>> CompleteRfqBid(int rfqBidId)
+    {
+        try
+        {
+            var isRBExist = await _context.RfqBids.FirstOrDefaultAsync(r=>r.Id==rfqBidId);
+            if(isRBExist == null) return new ServiceResponse<bool>{Data = false, Message = "RFQ Bid not found", Success = false};
+            isRBExist.IsCompleted = true;
+            _context.RfqBids.Update(isRBExist);
+            await _context.SaveChangesAsync();
+            return new ServiceResponse<bool>{Data = true, Message = "RFQ Bid completed successfully", Success = true};
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Error from RfqBidService: {e}");
+            return new ServiceResponse<bool>
+            {
+                Data = false,
+                Message = "Error completing RFQ Bid",
                 Success = false
             };
         }

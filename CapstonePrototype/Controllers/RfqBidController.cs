@@ -43,4 +43,28 @@ public class RfqBidController(IRfqBidService rfqBidService):ControllerBase
         if(response.Success)return Ok(response);
         return BadRequest(response);
     }
+
+    [HttpPost("invoice-or-resid")]
+    public async Task<ActionResult<ServiceResponse<bool>>> UploadInvoiceOrResid(RfqBidInputInvoiceOrResidto input)
+    {
+        var response = await _rfqBidService.UploadInvoiceOrResi(input);
+        if(response.Success)return Ok(response);
+        return BadRequest(response);
+    }
+
+    [HttpPost("upload-image")]
+    public async Task<ActionResult<ServiceResponse<bool>>> UploadImage(RfqBidInputPOPDto input)
+    {
+        var response = await _rfqBidService.UploadImage(input);
+        if(response.Success)return Ok(response);
+        return BadRequest(response);
+    }
+
+    [HttpPatch("complete/{rfqBidId}")]
+    public async Task<ActionResult<ServiceResponse<bool>>> CompleteRfqBid(int rfqBidId)
+    {
+        var response = await _rfqBidService.CompleteRfqBid(rfqBidId);
+        if(response.Success)return Ok(response);
+        return BadRequest(response);
+    }
 }

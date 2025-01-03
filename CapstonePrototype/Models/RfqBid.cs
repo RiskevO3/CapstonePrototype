@@ -14,7 +14,7 @@ public class RfqBid
     public string FileUrl {get;set;} = "";
     public string FilePaymentUrl {get;set;} = "";
     public string NoResi {get;set;} = "";
-
+    public bool IsCompleted {get;set;} = false;
     public DateTime OrderDeadline {get;set;}
     public DateTime ExpectedArrival {get;set;}
     public DateTime CreatedAt {get;set;}
